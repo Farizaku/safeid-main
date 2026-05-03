@@ -1,0 +1,187 @@
+<mxfile host="app.diagrams.net" pages="2">
+  <diagram name="Página-1" id="IL2xwDzkLAJgOmTEzYXu">
+    <mxGraphModel dx="1144" dy="633" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-28" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Camada de Persistência (PI-2)" vertex="1">
+          <mxGeometry height="338" width="285" x="20" y="534" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-29" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Camada de Inteligência e Dados Externos" vertex="1">
+          <mxGeometry height="185" width="640" x="325" y="609" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-30" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Camada de Aplicação (Backend)" vertex="1">
+          <mxGeometry height="491" width="1214" x="985" y="228" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-31" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Motores de Processamento" vertex="1">
+          <mxGeometry height="313" width="1174" x="1005" y="381" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-32" parent="1" style="ellipse;aspect=fixed;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Cidadão/Usuário" vertex="1">
+          <mxGeometry height="134" width="134" x="1528" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-33" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Interface React.js" vertex="1">
+          <mxGeometry height="54" width="189" x="1501" y="253" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-34" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="API Gateway / Node.js" vertex="1">
+          <mxGeometry height="54" width="223" x="1338" y="406" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-35" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Algoritmo de Risk Score" vertex="1">
+          <mxGeometry height="54" width="229" x="1616" y="587" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-36" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Gestão de Identidade JWT" vertex="1">
+          <mxGeometry height="54" width="249" x="1895" y="587" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-37" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="API Threat Intelligence - HIBP" vertex="1">
+          <mxGeometry height="78" width="260" x="360" y="575" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-38" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Modelo de Linguagem - LLM/IA" vertex="1">
+          <mxGeometry height="78" width="260" x="670" y="575" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-39" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Banco de Dados Relacional - PostgreSQL/MySQL" vertex="1">
+          <mxGeometry height="110" width="215" x="55" y="559" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-40" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Criptografia de Dados" vertex="1">
+          <mxGeometry height="54" width="215" x="55" y="794" as="geometry" />
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-41" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-32" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-33" value="Acessa WebApp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-42" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-33" style="curved=1;startArrow=none;endArrow=block;exitX=0.17;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-34" value="Requisições HTTPS/REST">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1449" y="344" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-43" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-34" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.99;entryX=0.49;entryY=0.01;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-35" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1721" y="497" />
+              <mxPoint x="1721" y="534" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-44" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-34" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.73;entryX=0.5;entryY=0.01;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-36" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2020" y="497" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-45" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-34" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.88;entryX=1;entryY=0.28;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-37" value="Consulta OSINT">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="497" />
+              <mxPoint x="1100" y="534" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-46" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-34" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.3;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-38" value="Prompt de Mitigação">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1449" y="534" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-47" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-34" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.81;entryX=1;entryY=0.41;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-39" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1025" y="497" />
+              <mxPoint x="1025" y="534" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-48" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-39" style="curved=1;startArrow=none;endArrow=none;exitX=0.5;exitY=1.01;entryX=0.5;entryY=-0.01;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-40" value="LGPD Compliance">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-49" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-37" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=1;exitY=0.33;entryX=0.15;entryY=1;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-34" value="Metadados de Vazamento">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1265" y="534" />
+              <mxPoint x="1265" y="497" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-50" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-38" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=1;exitY=0.34;entryX=0.82;entryY=1;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-34" value="Plano de Ação Natural">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1622" y="534" />
+              <mxPoint x="1622" y="497" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bwj03OhpvnEbFSK8Y9Bk-51" edge="1" parent="1" source="bwj03OhpvnEbFSK8Y9Bk-35" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.7;exitY=0.01;entryX=1;entryY=0.92;rounded=0;" target="bwj03OhpvnEbFSK8Y9Bk-33" value="Ponderação de Risco">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1865" y="534" />
+              <mxPoint x="1865" y="344" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="JXISMP5BcTaoG8vCgnSe" name="Página-2">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-1" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Serviços Externos" vertex="1">
+          <mxGeometry height="505" width="268" x="871" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-2" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Camada de Dados" vertex="1">
+          <mxGeometry height="165" width="268" x="871" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-3" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Camada de Serviço (API)" vertex="1">
+          <mxGeometry height="524" width="236" x="445" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-4" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Camada de Apresentação" vertex="1">
+          <mxGeometry height="148" width="275" x="20" y="332" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-5" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="&lt;b&gt;Frontend&lt;/b&gt;&#xa;React.js / Tailwind CSS" vertex="1">
+          <mxGeometry height="78" width="225" x="45" y="367" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-6" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="&lt;b&gt;Backend&lt;/b&gt;&#xa;Node.js / Express" vertex="1">
+          <mxGeometry height="78" width="186" x="470" y="367" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-7" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="&lt;b&gt;Database&lt;/b&gt;&#xa;PostgreSQL" vertex="1">
+          <mxGeometry height="95" width="94" x="958" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-8" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Have I Been Pwned API" vertex="1">
+          <mxGeometry height="218" width="218" x="896" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-9" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="OpenAI/LLM API" vertex="1">
+          <mxGeometry height="168" width="168" x="921" y="323" as="geometry" />
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-10" edge="1" parent="1" source="8IEh8eE1eKoIRDmwv1Ov-5" style="curved=1;startArrow=block;endArrow=block;strokeWidth=3;exitX=1;exitY=0.51;entryX=0;entryY=0.51;rounded=0;" target="8IEh8eE1eKoIRDmwv1Ov-6" value="JSON / HTTPS">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-11" edge="1" parent="1" source="8IEh8eE1eKoIRDmwv1Ov-6" style="curved=1;startArrow=block;endArrow=block;strokeWidth=3;exitX=0.61;exitY=1.01;entryX=0;entryY=0.5;rounded=0;" target="8IEh8eE1eKoIRDmwv1Ov-7" value="Prisma ORM">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="681" y="628" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-12" edge="1" parent="1" source="8IEh8eE1eKoIRDmwv1Ov-6" style="curved=1;startArrow=none;endArrow=none;exitX=0.6;exitY=0.01;entryX=0;entryY=0.5;rounded=0;" target="8IEh8eE1eKoIRDmwv1Ov-8" value="Consumo OSINT">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="681" y="164" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8IEh8eE1eKoIRDmwv1Ov-13" edge="1" parent="1" source="8IEh8eE1eKoIRDmwv1Ov-6" style="curved=1;startArrow=none;endArrow=none;exitX=1;exitY=0.51;entryX=0;entryY=0.5;rounded=0;" target="8IEh8eE1eKoIRDmwv1Ov-9" value="Prompt Engineering">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
