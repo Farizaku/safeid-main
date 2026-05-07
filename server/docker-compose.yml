@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: safeid-postgres
+    environment:
+      POSTGRES_USER: safeid_user
+      POSTGRES_PASSWORD: SenhaForte2025
+      POSTGRES_DB: safeid_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - safeid-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U safeid_user -d safeid_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: safeid-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - safeid-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: safeid-app
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://safeid_user:SenhaForte2025@postgres:5432/safeid_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      APP_PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - safeid-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  safeid-network:
+    driver: bridge

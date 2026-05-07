@@ -1,0 +1,84 @@
+// This is your Prisma schema file for SafeID
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTH & USERS
+// ============================================================================
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  passwordHash    String
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relacionamentos
+  scans           ScanHistory[]
+
+  @@index([email])
+  @@map("user")
+}
+
+// ============================================================================
+// SCAN RESULTS & HISTORY
+// ============================================================================
+
+model ScanHistory {
+  id              Int       @id @default(autoincrement())
+  jobId           String    @unique
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  emailHash       String    // SHA-256 hash do email (não armazenar email em texto)
+  
+  riskScore       Int       // 0-100
+  classification  String    // LOW, MODERATE, CRITICAL
+  
+  breachesFound   Int?      // Número de breaches encontrados
+  breachData      String?   // JSON serializado com info dos breaches (criptografado em repouso)
+  
+  recommendation  String?   // Texto da recomendação da IA (português)
+  
+  isVerified      Boolean   @default(false)
+  processedAt     DateTime?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([emailHash])
+  @@index([createdAt])
+  @@map("scan_history")
+}
+
+// ============================================================================
+// BREACH CACHE (Local cache de breaches conhecidos)
+// ============================================================================
+
+model BreachCache {
+  id              Int       @id @default(autoincrement())
+  breachId        String    @unique // ID do HIBP
+  breachName      String    // Ex: "Canva"
+  breachTitle     String?
+  description     String?
+  breachDate      DateTime?
+  exposedDataTypes String? // JSON array de data classes
+  isVerified      Boolean   @default(true)
+  
+  cachedAt        DateTime  @default(now())
+  expiresAt       DateTime  // TTL para limpeza
+
+  @@index([breachId])
+  @@index([expiresAt])
+  @@map("breach_cache")
+}
