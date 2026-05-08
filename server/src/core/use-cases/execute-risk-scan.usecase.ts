@@ -164,7 +164,8 @@ export class ExecuteRiskScanUseCase {
       }
 
       if (state === 'failed') {
-        throw new Error(`Job failed: ${job.failedReason}`);
+        const failureReason = job.failedReason || (job.data?.error?.message) || 'Unknown error';
+        throw new Error(`Job failed: ${failureReason}`);
       }
 
       await new Promise(resolve => setTimeout(resolve, 100));

@@ -1,6 +1,9 @@
 import { Module, Global } from '@nestjs/common';
-import { Queue, Worker } from 'bullmq';
+import { Queue } from 'bullmq';
 import Redis from 'ioredis';
+import { HibpClient } from '../http/hibp.client';
+import { MockHibpClient } from '../http/hibp.mock';
+import { createHibpWorker } from './hibp.worker';
 
 @Global()
 @Module({
@@ -8,29 +11,37 @@ import Redis from 'ioredis';
     {
       provide: 'HIBP_QUEUE',
       useFactory: () => {
-        const connection = new Redis({
+        const redisConfig = {
           host: process.env.REDIS_HOST || 'localhost',
           port: parseInt(process.env.REDIS_PORT || '6379'),
-        });
+          maxRetriesPerRequest: null as null,
+        };
+
+        const queueConnection = new Redis(redisConfig);
+        const workerConnection = new Redis(redisConfig);
 
         // Queue producer
-        const queue = new Queue('hibp-check', { connection });
+        const queue = new Queue('hibp-check', { connection: queueConnection });
 
-        // Basic in-process worker to avoid job timeouts during development.
-        // Replace the processor with real HIBP lookup logic (and API key) later.
-        new Worker(
-          'hibp-check',
-          async (job) => {
-            // Placeholder processor: performs lookup and stores result on job.data.result
-            // Implement real HIBP integration here.
-            const breaches: any[] = [];
+        // Create HIBP client: use mock in dev if API key not configured
+        const apiKey = process.env.HIBP_API_KEY || '';
+        const useMock = !apiKey && process.env.NODE_ENV !== 'production';
+        
+        const hibpClient = useMock
+          ? new MockHibpClient()
+          : new HibpClient({
+              apiKey: apiKey,
+              baseUrl: process.env.HIBP_BASE_URL,
+              userAgent: 'safeid-backend',
+            });
 
-            await job.update({ ...job.data, result: breaches });
+        if (useMock) {
+          console.log(
+            '[QueueModule] ⚠️  Using MOCK HIBP client. Set HIBP_API_KEY to use real API.'
+          );
+        }
 
-            return breaches;
-          },
-          { connection }
-        );
+        createHibpWorker(workerConnection, hibpClient);
 
         return queue;
       },

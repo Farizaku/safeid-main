@@ -15,13 +15,43 @@ COPY . .
 # Build application
 RUN npm run build
 
-# Stage 2: Runner
+# Stage 2: Development
+FROM node:20-alpine AS dev
+
+WORKDIR /app
+
+# Install runtime tools required by health checks and Prisma engines
+RUN apk add --no-cache curl openssl
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev)
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Generate Prisma Client
+RUN npm run prisma:generate
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Start application in watch mode
+CMD ["npm", "run", "dev"]
+
+# Stage 3: Runner (Production)
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Install curl for health checks
-RUN apk add --no-cache curl
+# Install runtime tools required by health checks and Prisma engines
+RUN apk add --no-cache curl openssl
 
 # Copy package files
 COPY package*.json ./

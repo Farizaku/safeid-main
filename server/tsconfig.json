@@ -21,6 +21,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
+    "ignoreDeprecations": "5.0",
     "declarationMap": true,
     "sourceMap": true,
     "experimentalDecorators": true,

@@ -190,6 +190,41 @@ REFRESH_TOKEN_SECRET=your-refresh-token-secret
 
 Veja `.env.example` para lista completa.
 
+### Variáveis da integração HIBP
+
+```env
+HIBP_API_KEY=your-hibp-api-key
+HIBP_BASE_URL=https://haveibeenpwned.com/api/v3
+HIBP_MIN_INTERVAL_MS=1500
+```
+
+- `HIBP_API_KEY`: chave da API v3 da Have I Been Pwned.
+- `HIBP_BASE_URL`: endpoint base da API HIBP.
+- `HIBP_MIN_INTERVAL_MS`: intervalo mínimo entre consultas do worker.
+
+A consulta HIBP roda via BullMQ com worker de concorrência 1 e intervalo mínimo entre chamadas para respeitar o rate-limit da API.
+
+### Comandos para validar a integração HIBP
+
+```powershell
+npm run start
+```
+
+Em outro terminal, execute um scan de teste:
+
+```powershell
+curl -X POST "http://localhost:3000/api/v1/scan" ^
+  -H "accept: application/json" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"email\":\"seu-email@dominio.com\"}"
+```
+
+Verifique no log da API mensagens do worker, como:
+
+```text
+[HIBP Worker] job <id> completed
+```
+
 ## 🧪 Testes
 
 A aplicação segue a pirâmide de testes:

@@ -37,13 +37,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: dev
     container_name: safeid-app
+    restart: unless-stopped
     environment:
       NODE_ENV: development
       DATABASE_URL: postgresql://safeid_user:SenhaForte2025@postgres:5432/safeid_db
       REDIS_HOST: redis
       REDIS_PORT: 6379
       APP_PORT: 3000
+      HIBP_API_KEY: ${HIBP_API_KEY:-}
+      HIBP_BASE_URL: ${HIBP_BASE_URL:-https://haveibeenpwned.com/api/v3}
+      HIBP_MIN_INTERVAL_MS: ${HIBP_MIN_INTERVAL_MS:-1500}
     ports:
       - "3000:3000"
     depends_on:
@@ -55,12 +60,13 @@ services:
       - safeid-network
     volumes:
       - .:/app
-      - /app/node_modules
+      - app_node_modules:/app/node_modules
     command: npm run dev
 
 volumes:
   postgres_data:
   redis_data:
+  app_node_modules:
 
 networks:
   safeid-network:

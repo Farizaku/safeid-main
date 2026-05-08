@@ -46,6 +46,9 @@ docker-compose ps
 # Aplicar schema (cria tabelas)
 npm run db:push
 
+# Gerar Prisma Client manualmente, se necessário
+npm run prisma:generate
+
 # Ou criar migration para versionar mudanças
 npm run db:migrate
 
@@ -103,10 +106,10 @@ Acesse **http://localhost:3000/api/docs** para ver a documentação completa do 
 npm test
 
 # Testes em modo watch
-npm test:watch
+npm run test:watch
 
 # Testes com cobertura
-npm test:cov
+npm run test:cov
 
 # Testes de integração
 npm run test:integration
@@ -138,6 +141,9 @@ npm run db:studio
 
 # Criar nova migration
 npm run db:migrate
+
+# Gerar Prisma Client
+npm run prisma:generate
 
 # Resetar banco de dados (cuidado!)
 npx prisma migrate reset
