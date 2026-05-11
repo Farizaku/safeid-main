@@ -11,15 +11,20 @@ export interface HibpClientOptions {
 export class HibpClient {
   private axios: AxiosInstance;
   private breaker: any;
+  private hasApiKey: boolean;
+  private missingApiKeyWarned = false;
 
   constructor(options: HibpClientOptions) {
     const baseUrl = options.baseUrl || 'https://haveibeenpwned.com/api/v3';
+    const apiKey = (options.apiKey || '').trim();
+
+    this.hasApiKey = apiKey.length > 0;
 
     this.axios = axios.create({
       baseURL: baseUrl,
       timeout: 10000,
       headers: {
-        'hibp-api-key': options.apiKey || '',
+        'hibp-api-key': apiKey,
         'User-Agent': options.userAgent || 'safeid-backend',
       },
     });
@@ -73,32 +78,71 @@ export class HibpClient {
   }
 
   private async checkAccountByRange(email: string): Promise<any[]> {
-    const normalizedEmail = email.trim().toLowerCase();
-    const sha1 = createHash('sha1').update(normalizedEmail).digest('hex').toUpperCase();
-    const prefix = sha1.slice(0, 6);
-    const suffix = sha1.slice(6);
+    try {
+      const normalizedEmail = email.trim().toLowerCase();
+      const sha1 = createHash('sha1').update(normalizedEmail).digest('hex').toUpperCase();
+      const prefix = sha1.slice(0, 6);
+      const suffix = sha1.slice(6);
 
-    const response = await this.axios.get(`/breachedaccount/range/${prefix}`);
-    const matchedAccount = Array.isArray(response.data)
-      ? response.data.find((entry: any) => entry.hashSuffix === suffix)
-      : null;
+      const response = await this.axios.get(`/breachedaccount/range/${prefix}`);
+      const entries = Array.isArray(response.data) ? response.data : [];
+      const matchedAccount = entries.find((entry: any) => {
+        const entrySuffix = entry?.hashSuffix || entry?.HashSuffix || entry?.suffix;
+        return entrySuffix === suffix;
+      });
 
-    if (!matchedAccount) {
-      return [];
+      if (!matchedAccount) {
+        return [];
+      }
+
+      const websites =
+        (matchedAccount.websites as string[]) ||
+        (matchedAccount.Websites as string[]) ||
+        (matchedAccount.breaches as string[]) ||
+        [];
+
+      const uniqueBreachNames = Array.from(new Set(websites));
+      const breaches = await Promise.all(
+        uniqueBreachNames.map(async (breachName: string) => {
+          const breachResponse = await this.axios.get(`/breach/${encodeURIComponent(breachName)}`);
+          return breachResponse.data;
+        })
+      );
+
+      return breaches.filter(Boolean);
+    } catch (err: any) {
+      const status = err?.response?.status;
+
+      // Treat auth errors in degraded mode so signup can still complete with a safe snapshot.
+      if (status === 401 || status === 403 || status === 404) {
+        return [];
+      }
+
+      throw err;
     }
-
-    const uniqueBreachNames = Array.from(new Set((matchedAccount.websites || []) as string[]));
-    const breaches = await Promise.all(
-      uniqueBreachNames.map(async (breachName: string) => {
-        const breachResponse = await this.axios.get(`/breach/${encodeURIComponent(breachName)}`);
-        return breachResponse.data;
-      })
-    );
-
-    return breaches.filter(Boolean);
   }
 
   async checkAccount(email: string): Promise<any[]> {
-    return this.breaker.fire(email);
+    if (!this.hasApiKey) {
+      if (!this.missingApiKeyWarned) {
+        console.warn('[HIBP Client] HIBP_API_KEY not configured. Returning empty result in degraded mode.');
+        this.missingApiKeyWarned = true;
+      }
+
+      return [];
+    }
+
+    try {
+      return await this.breaker.fire(email);
+    } catch (err: any) {
+      const status = err?.response?.status;
+      const message = String(err?.message || '');
+
+      if (status === 401 || status === 403 || /breaker is open/i.test(message)) {
+        return [];
+      }
+
+      throw err;
+    }
   }
 }

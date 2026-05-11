@@ -37,6 +37,27 @@ export class ScanService {
     return result;
   }
 
+  async persistFallbackSnapshot(userId: number, email: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        scanSnapshot: {
+          jobId: `fallback-${Date.now()}`,
+          riskScore: 0,
+          classification: 'LOW',
+          breachesFound: 0,
+          recommendation:
+            'Initial scan could not be verified right now. We will retry in background.',
+          isVerified: false,
+          processedAt: new Date(),
+          breachData: null,
+          email,
+        },
+        scanSnapshotUpdatedAt: new Date(),
+      },
+    });
+  }
+
   /**
    * Recupera histórico de scans do usuário
    */

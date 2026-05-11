@@ -93,13 +93,18 @@ export class ExecuteRiskScanUseCase {
       // 5. Gera recomendação com IA
       let recommendation: string | undefined;
       if (breaches && breaches.length > 0) {
-        const aiResult = await this.aiEngine.generateRecommendation({
-          breachName: breaches[0]?.Name || 'Unknown',
-          exposedDataTypes: breaches[0]?.DataClasses || [],
-          daysAgo: this.calculateDaysAgo(breaches[0]?.BreachDate),
-          riskScore: riskCalc.totalScore,
-        });
-        recommendation = aiResult.executive_summary;
+        try {
+          const aiResult = await this.aiEngine.generateRecommendation({
+            breachName: breaches[0]?.Name || 'Unknown',
+            exposedDataTypes: breaches[0]?.DataClasses || [],
+            daysAgo: this.calculateDaysAgo(breaches[0]?.BreachDate),
+            riskScore: riskCalc.totalScore,
+          });
+          recommendation = aiResult.executive_summary;
+        } catch (error) {
+          console.warn('[ExecuteRiskScan] AI recommendation unavailable, continuing without it:', error);
+          recommendation = undefined;
+        }
       }
 
       // 6. Cria e persiste resultado
@@ -168,11 +173,23 @@ export class ExecuteRiskScanUseCase {
       const state = await job.getState();
       
       if (state === 'completed') {
-        return job.data.result;
+        const refreshed = await job.queue.getJob(job.id);
+        return (
+          refreshed?.data?.result ||
+          refreshed?.returnvalue ||
+          job?.data?.result ||
+          null
+        );
       }
 
       if (state === 'failed') {
-        const failureReason = job.failedReason || (job.data?.error?.message) || 'Unknown error';
+        const refreshed = await job.queue.getJob(job.id);
+        const failureReason =
+          refreshed?.failedReason ||
+          job.failedReason ||
+          refreshed?.data?.error?.message ||
+          job.data?.error?.message ||
+          'Unknown error';
         throw new Error(`Job failed: ${failureReason}`);
       }
 

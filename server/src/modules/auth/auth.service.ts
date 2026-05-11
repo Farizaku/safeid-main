@@ -73,6 +73,7 @@ export class AuthService {
     } catch (error) {
       scanFailure = error;
       console.error('[AuthService] Initial scan failed:', error);
+      await this.scanService.persistFallbackSnapshot(user.id, user.email);
     }
 
     // Gerar tokens

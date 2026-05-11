@@ -15,9 +15,13 @@ interface AIRecommendation {
 
 export class AIEngine {
   private client: OpenAI;
+  private apiKey: string;
 
   constructor(apiKey: string) {
-    this.client = new OpenAI({ apiKey });
+    this.apiKey = (apiKey || '').trim();
+    this.client = new OpenAI({
+      apiKey: this.apiKey || 'missing-api-key',
+    });
   }
 
   /**
@@ -31,6 +35,10 @@ export class AIEngine {
     daysAgo: number;
     riskScore: number;
   }): Promise<AIRecommendation> {
+    if (!this.apiKey) {
+      return this.buildFallbackRecommendation(context);
+    }
+
     const prompt = this.buildSafePrompt(context);
 
     try {
@@ -55,8 +63,30 @@ export class AIEngine {
       return JSON.parse(textContent) as AIRecommendation;
     } catch (error) {
       console.error('AIEngine error:', error);
-      throw new Error('Failed to generate recommendation');
+      return this.buildFallbackRecommendation(context);
     }
+  }
+
+  private buildFallbackRecommendation(context: {
+    breachName: string;
+    exposedDataTypes: string[];
+    daysAgo: number;
+    riskScore: number;
+  }): AIRecommendation {
+    const dataTypes = context.exposedDataTypes.length > 0
+      ? context.exposedDataTypes.join(', ')
+      : 'dados não especificados';
+
+    return {
+      executive_summary:
+        `Detectamos um possível vazamento em ${context.breachName} envolvendo ${dataTypes}. Troque sua senha imediatamente e revise suas contas conectadas.`,
+      mitigation_steps: [
+        'Troque a senha afetada por uma senha única e forte.',
+        'Ative autenticação de dois fatores nas contas principais.',
+        'Revise atividades recentes e alertas de login em seus serviços.',
+      ],
+      urgency_level: context.riskScore >= 70 ? 'HIGH' : 'MEDIUM',
+    };
   }
 
   /**
