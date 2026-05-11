@@ -5,6 +5,9 @@ export const CurrentUser = createParamDecorator(
     const request = ctx.switchToHttp().getRequest();
     const user = request.user;
 
+    // Se data especifica um campo, retorna apenas esse campo
+    // Se não especifica, retorna o usuário completo (JwtPayload)
     return data ? user?.[data] : user;
   },
 );
+

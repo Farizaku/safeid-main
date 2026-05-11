@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import CircuitBreaker from 'opossum';
+import { createHash } from 'crypto';
 
 export interface HibpClientOptions {
   apiKey: string;
@@ -25,21 +26,15 @@ export class HibpClient {
 
     // Wrap the HTTP call in a circuit breaker
     const httpCall = async (email: string) => {
-      const url = `/breachedaccount/${encodeURIComponent(email)}`;
-
       try {
-        const res = await this.axios.get(url, {
-          params: { truncateResponse: false },
-        });
-
-        return res.data || [];
+        return await this.checkAccountDirect(email);
       } catch (err: any) {
-        // HIBP returns 404 when no breaches found — treat as empty array
-        if (err?.response?.status === 404) {
-          return [];
+        const status = err?.response?.status;
+
+        if (status === 401 || status === 403) {
+          return this.checkAccountByRange(email);
         }
 
-        // propagate other errors
         throw err;
       }
     };
@@ -55,6 +50,52 @@ export class HibpClient {
     this.breaker.on('open', () => console.warn('[HIBP Circuit] OPEN'));
     this.breaker.on('halfOpen', () => console.info('[HIBP Circuit] HALF_OPEN'));
     this.breaker.on('close', () => console.info('[HIBP Circuit] CLOSED'));
+  }
+
+  private async checkAccountDirect(email: string): Promise<any[]> {
+    const url = `/breachedaccount/${encodeURIComponent(email)}`;
+
+    try {
+      const res = await this.axios.get(url, {
+        params: { truncateResponse: false },
+      });
+
+      return res.data || [];
+    } catch (err: any) {
+      // HIBP returns 404 when no breaches found — treat as empty array
+      if (err?.response?.status === 404) {
+        return [];
+      }
+
+      // propagate other errors
+      throw err;
+    }
+  }
+
+  private async checkAccountByRange(email: string): Promise<any[]> {
+    const normalizedEmail = email.trim().toLowerCase();
+    const sha1 = createHash('sha1').update(normalizedEmail).digest('hex').toUpperCase();
+    const prefix = sha1.slice(0, 6);
+    const suffix = sha1.slice(6);
+
+    const response = await this.axios.get(`/breachedaccount/range/${prefix}`);
+    const matchedAccount = Array.isArray(response.data)
+      ? response.data.find((entry: any) => entry.hashSuffix === suffix)
+      : null;
+
+    if (!matchedAccount) {
+      return [];
+    }
+
+    const uniqueBreachNames = Array.from(new Set((matchedAccount.websites || []) as string[]));
+    const breaches = await Promise.all(
+      uniqueBreachNames.map(async (breachName: string) => {
+        const breachResponse = await this.axios.get(`/breach/${encodeURIComponent(breachName)}`);
+        return breachResponse.data;
+      })
+    );
+
+    return breaches.filter(Boolean);
   }
 
   async checkAccount(email: string): Promise<any[]> {

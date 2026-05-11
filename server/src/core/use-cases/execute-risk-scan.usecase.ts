@@ -118,6 +118,14 @@ export class ExecuteRiskScanUseCase {
         updatedAt: new Date(),
       };
 
+      console.log('[ExecuteRiskScan] Creating scan result:', {
+        jobId,
+        userId: input.userId,
+        emailHash: emailHash.substring(0, 8) + '...',
+        riskScore: riskCalc.totalScore,
+        classification: riskCalc.classification,
+      });
+
       await this.scanRepository.create(scanResult);
 
       // 7. Cache o resultado (12h se comprometido, 24h se limpo)

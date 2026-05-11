@@ -32,6 +32,8 @@ export class ScanService {
       userId,
     });
 
+    await this.persistUserScanSnapshot(userId, dto.email, result);
+
     return result;
   }
 
@@ -87,10 +89,20 @@ export class ScanService {
   private createRepository() {
     return {
       create: async (scan: any) => {
+        console.log('[ScanRepository] Creating scan with data:', {
+          jobId: scan.jobId,
+          userId: scan.userId,
+          riskScore: scan.riskScore,
+          classification: scan.classification,
+        });
         const created = await this.prisma.scanHistory.create({
           data: {
-            jobId: scan.id,
-            userId: scan.userId,
+            jobId: scan.jobId,
+            user: {
+              connect: {
+                id: scan.userId,
+              },
+            },
             emailHash: scan.emailHash,
             riskScore: scan.riskScore,
             classification: scan.classification,
@@ -101,6 +113,7 @@ export class ScanService {
             processedAt: scan.processedAt,
           },
         });
+        console.log('[ScanRepository] Scan created successfully:', created.jobId);
         return created;
       },
       findById: async (id: string) => {
@@ -122,5 +135,60 @@ export class ScanService {
         return true;
       },
     };
+  }
+
+  private async persistUserScanSnapshot(
+    userId: number,
+    email: string,
+    result: ScanResultDto,
+  ) {
+    const latestHistory = await this.prisma.scanHistory.findFirst({
+      where: {
+        userId,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const snapshot = latestHistory
+      ? {
+          jobId: latestHistory.jobId,
+          riskScore: latestHistory.riskScore,
+          classification: latestHistory.classification,
+          breachesFound: latestHistory.breachesFound || 0,
+          recommendation: latestHistory.recommendation,
+          isVerified: latestHistory.isVerified,
+          processedAt: latestHistory.processedAt,
+          breachData: this.parseJson(latestHistory.breachData),
+        }
+      : {
+          jobId: result.jobId,
+          riskScore: result.riskScore,
+          classification: result.classification,
+          breachesFound: result.breachesFound,
+          recommendation: result.recommendation ?? null,
+          isVerified: result.isVerified,
+          processedAt: new Date(),
+          breachData: null,
+        };
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        scanSnapshot: snapshot,
+        scanSnapshotUpdatedAt: new Date(),
+      },
+    });
+  }
+
+  private parseJson(value: string | null | undefined) {
+    if (!value) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(value);
+    } catch {
+      return null;
+    }
   }
 }

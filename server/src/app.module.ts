@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 // Module imports
 import { HealthModule } from './modules/health/health.module';
 import { ScanModule } from './modules/scan/scan.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 // Infra modules
 import { DatabaseModule } from './infra/database/database.module';
@@ -24,6 +25,7 @@ import { QueueModule } from './infra/queue/queue.module';
     QueueModule,
 
     // Domain Modules
+    AuthModule,
     ScanModule,
     HealthModule,
   ],

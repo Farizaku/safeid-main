@@ -36,7 +36,7 @@ export function createHibpWorker(connection: Redis, hibpClient: HibpClientLike) 
         lastRequestTs = Date.now();
 
         // store result in job data for the producer to read
-        await (job as any).update({ ...job.data, result: breaches });
+        await job.updateData({ ...job.data, result: breaches });
 
         return breaches;
       } catch (err) {

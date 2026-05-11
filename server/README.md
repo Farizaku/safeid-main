@@ -83,6 +83,9 @@ A documentação Swagger em **http://localhost:3000/api/docs**
 - `npm run test:cov` - Cobertura de testes
 - `npm run test:integration` - Testes de integração
 - `npm run test:e2e` - Testes end-to-end
+- `npm run test:auth:manual` - Fluxo manual de signup/login/me
+- `npm run test:hibp:manual` - Fluxo manual com emails de teste da HIBP
+- `npm run test:setup:user` - Cria o usuário de apoio para testes manuais
 
 ### Banco de dados
 
@@ -193,14 +196,17 @@ Veja `.env.example` para lista completa.
 ### Variáveis da integração HIBP
 
 ```env
-HIBP_API_KEY=your-hibp-api-key
+HIBP_API_KEY=00000000000000000000000000000000
 HIBP_BASE_URL=https://haveibeenpwned.com/api/v3
 HIBP_MIN_INTERVAL_MS=1500
+HIBP_USE_MOCK=false
 ```
 
 - `HIBP_API_KEY`: chave da API v3 da Have I Been Pwned.
+- O valor com 32 zeros funciona para os emails de teste da própria HIBP.
 - `HIBP_BASE_URL`: endpoint base da API HIBP.
 - `HIBP_MIN_INTERVAL_MS`: intervalo mínimo entre consultas do worker.
+- `HIBP_USE_MOCK`: opt-in explícito para o cliente mock em desenvolvimento.
 
 A consulta HIBP roda via BullMQ com worker de concorrência 1 e intervalo mínimo entre chamadas para respeitar o rate-limit da API.
 

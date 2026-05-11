@@ -12,10 +12,12 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 import { ScanService } from './services/scan.service';
 import { CreateScanDto, ScanResultDto, ScanHistoryDto } from './dto/scan.dto';
 import { CurrentUser } from '../../api/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('scan')
 @ApiBearerAuth()
 @Controller('api/v1/scan')
+@UseGuards(JwtAuthGuard)
 export class ScanController {
   constructor(private scanService: ScanService) {}
 
@@ -28,7 +30,7 @@ export class ScanController {
     type: ScanResultDto,
   })
   async submitScan(
-    @CurrentUser('id') userId: number,
+    @CurrentUser('sub') userId: number,
     @Body() dto: CreateScanDto,
   ): Promise<ScanResultDto> {
     return this.scanService.submitScan(userId, dto);
@@ -41,7 +43,7 @@ export class ScanController {
     description: 'List of user scans',
     type: [ScanHistoryDto],
   })
-  async getHistory(@CurrentUser('id') userId: number): Promise<ScanHistoryDto[]> {
+  async getHistory(@CurrentUser('sub') userId: number): Promise<ScanHistoryDto[]> {
     return this.scanService.getUserHistory(userId);
   }
 
@@ -52,7 +54,7 @@ export class ScanController {
     description: 'Scan result details',
   })
   async getScanDetail(
-    @CurrentUser('id') userId: number,
+    @CurrentUser('sub') userId: number,
     @Param('jobId') jobId: string,
   ): Promise<any> {
     return this.scanService.getScanDetail(userId, jobId);

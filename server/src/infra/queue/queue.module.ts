@@ -19,25 +19,29 @@ import { createHibpWorker } from './hibp.worker';
 
         const queueConnection = new Redis(redisConfig);
         const workerConnection = new Redis(redisConfig);
+        const apiKey = (process.env.HIBP_API_KEY || '').trim();
+        const useMock = process.env.HIBP_USE_MOCK === 'true';
 
         // Queue producer
         const queue = new Queue('hibp-check', { connection: queueConnection });
 
-        // Create HIBP client: use mock in dev if API key not configured
-        const apiKey = process.env.HIBP_API_KEY || '';
-        const useMock = !apiKey && process.env.NODE_ENV !== 'production';
-        
+        if (!useMock && !apiKey) {
+          throw new Error(
+            '[QueueModule] HIBP_API_KEY is required. Use the zeroed test key for the HIBP integration tests or set HIBP_USE_MOCK=true explicitly.'
+          );
+        }
+
         const hibpClient = useMock
           ? new MockHibpClient()
           : new HibpClient({
-              apiKey: apiKey,
+              apiKey,
               baseUrl: process.env.HIBP_BASE_URL,
               userAgent: 'safeid-backend',
             });
 
         if (useMock) {
           console.log(
-            '[QueueModule] ⚠️  Using MOCK HIBP client. Set HIBP_API_KEY to use real API.'
+            '[QueueModule] ⚠️  Using MOCK HIBP client because HIBP_USE_MOCK=true.'
           );
         }
 
