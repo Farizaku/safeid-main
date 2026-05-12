@@ -19,7 +19,7 @@ export class ScanService {
       this.createRepository(),
       this.cacheService,
       this.hibpQueue,
-      process.env.OPENAI_API_KEY || '',
+      process.env.GOOGLE_GEMINI_API_KEY || '',
     );
   }
 

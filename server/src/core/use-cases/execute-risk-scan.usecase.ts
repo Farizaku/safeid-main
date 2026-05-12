@@ -90,14 +90,12 @@ export class ExecuteRiskScanUseCase {
       // 4. Calcula Risk Score
       const riskCalc = this.riskEngine.calculate(breaches || []);
 
-      // 5. Gera recomendação com IA
+      // 5. Gera recomendação com IA (passa TODAS as breaches)
       let recommendation: string | undefined;
       if (breaches && breaches.length > 0) {
         try {
           const aiResult = await this.aiEngine.generateRecommendation({
-            breachName: breaches[0]?.Name || 'Unknown',
-            exposedDataTypes: breaches[0]?.DataClasses || [],
-            daysAgo: this.calculateDaysAgo(breaches[0]?.BreachDate),
+            breaches: breaches,
             riskScore: riskCalc.totalScore,
           });
           recommendation = aiResult.executive_summary;
