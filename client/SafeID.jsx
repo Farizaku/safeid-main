@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "./context/AuthContext";
+import AuthForm from "./AuthForm";
+import { scanAPI } from "./api/apiClient";
 
 const COLORS = {
   bg: "#050B18",
@@ -18,40 +21,8 @@ const COLORS = {
   gradMid: "#050B18",
 };
 
-const MOCK_BREACHES = [
-  {
-    name: "LinkedIn",
-    date: "2021-06-22",
-    dataClasses: ["Email addresses", "Geographic locations", "Job titles", "Names", "Phone numbers"],
-    pwnCount: 700000000,
-    weight: 4,
-    color: "#0077B5",
-  },
-  {
-    name: "Adobe",
-    date: "2019-10-04",
-    dataClasses: ["Email addresses", "Passwords", "Usernames", "Credit card data"],
-    pwnCount: 153000000,
-    weight: 9,
-    color: "#FF0000",
-  },
-  {
-    name: "Dropbox",
-    date: "2016-08-31",
-    dataClasses: ["Email addresses", "Passwords"],
-    pwnCount: 68648009,
-    weight: 8,
-    color: "#0061FF",
-  },
-  {
-    name: "MyFitnessPal",
-    date: "2018-03-25",
-    dataClasses: ["Email addresses", "IP addresses", "Passwords", "Usernames"],
-    pwnCount: 143606147,
-    weight: 7,
-    color: "#00A8FF",
-  },
-];
+// Placeholder for breach data that comes from API
+// Real data will be fetched from backend
 
 const WEIGHT_MAP = {
   "Passwords": 10,
@@ -380,33 +351,73 @@ function DataBar({ label, count, total, color }) {
 }
 
 export default function SafeID() {
+  const { user, isAuthenticated, logout } = useAuth();
   const [email, setEmail] = useState("");
   const [searching, setSearching] = useState(false);
   const [breaches, setBreaches] = useState(null);
   const [score, setScore] = useState(0);
   const [tab, setTab] = useState("overview");
   const [noResult, setNoResult] = useState(false);
+  const [error, setError] = useState("");
+  const [breachData, setBreachData] = useState(null);
   const inputRef = useRef();
+
+  // If user is not authenticated, show auth form
+  if (!isAuthenticated) {
+    return <AuthForm onSuccess={() => {}} />;
+  }
+
+  // Format breach data from API response for display
+  const formatBreachData = (apiData) => {
+    if (!apiData || !apiData.breachData) return [];
+    try {
+      const data = typeof apiData.breachData === 'string' ? JSON.parse(apiData.breachData) : apiData.breachData;
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      console.error('Error parsing breach data:', e);
+      return [];
+    }
+  };
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!email.includes("@")) return;
+    
     setSearching(true);
     setBreaches(null);
     setNoResult(false);
+    setError("");
 
-    await new Promise(r => setTimeout(r, 1800));
-
-    if (email.toLowerCase().includes("safe") || email.toLowerCase().includes("clean")) {
-      setBreaches([]);
-      setScore(0);
-      setNoResult(true);
-    } else {
-      setBreaches(MOCK_BREACHES);
-      setScore(calcScore(MOCK_BREACHES));
+    try {
+      const result = await scanAPI.submitScan(email);
+      
+      // Parse breach data
+      const formattedBreaches = formatBreachData(result);
+      
+      if (formattedBreaches.length === 0) {
+        setBreaches([]);
+        setScore(0);
+        setNoResult(true);
+      } else {
+        setBreaches(formattedBreaches);
+        setScore(result.riskScore || 0);
+      }
+      
+      setBreachData(result);
+      setTab("overview");
+    } catch (err) {
+      setError(err.message || "Erro ao verificar email. Tente novamente.");
+      setBreaches(null);
+    } finally {
+      setSearching(false);
     }
-    setSearching(false);
-    setTab("overview");
+  };
+
+  const handleLogout = () => {
+    logout();
+    setEmail("");
+    setBreaches(null);
+    setScore(0);
   };
 
   const allDataTypes = breaches ? [...new Set(breaches.flatMap(b => b.dataClasses))] : [];
@@ -465,14 +476,36 @@ export default function SafeID() {
               {item}
             </span>
           ))}
-          <button style={{
-            background: `linear-gradient(135deg, ${COLORS.primary}, ${COLORS.primaryGlow})`,
-            border: "none", borderRadius: 8, color: "#fff",
-            padding: "8px 16px", fontSize: 13, fontWeight: 600,
-            cursor: "pointer", fontFamily: "inherit",
-          }}>
-            Criar conta
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ color: COLORS.textMuted, fontSize: 13 }}>
+              {user?.email}
+            </span>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: "transparent",
+                border: `1px solid ${COLORS.border}`,
+                borderRadius: 8,
+                color: COLORS.textDim,
+                padding: "8px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = COLORS.borderLight;
+                e.currentTarget.style.color = COLORS.text;
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = COLORS.border;
+                e.currentTarget.style.color = COLORS.textDim;
+              }}
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -503,6 +536,19 @@ export default function SafeID() {
 
           {/* Search */}
           <form onSubmit={handleSearch}>
+            {error && (
+              <div style={{
+                background: '#1A0A0A',
+                border: `1px solid #F87171` + '44',
+                borderRadius: 12,
+                padding: '12px 14px',
+                marginBottom: 16,
+                color: '#F87171',
+                fontSize: 13,
+              }}>
+                {error}
+              </div>
+            )}
             <div style={{
               display: "flex", gap: 10,
               background: COLORS.bgCard,
@@ -516,7 +562,7 @@ export default function SafeID() {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="seu@email.com"
+                placeholder={user?.email || "seu@email.com"}
                 style={{
                   flex: 1, background: "transparent", border: "none", outline: "none",
                   color: COLORS.text, fontSize: 16, padding: "10px 14px",
